@@ -5,44 +5,19 @@ import {NavigationContainer} from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
-import Home from './HomesScreen/Home';
-import Tasks from './HomesScreen/Tasks';
-import Drawer from './Drawer';
+import Home from './Home';
+import Tasks from './Tasks';
 import LoginScreen from './LoginScreen';
 import SignUpScreen from './SignUpScreen';
 
 const Tab = createBottomTabNavigator();
 
-function Feed() {
-	return (
-		<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-			<Text>Feed Screen</Text>
-		</View>
-	);
-}
-
-function Article() {
-	return (
-		<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-			<Text>Article Screen</Text>
-		</View>
-	);
-}
-
 const Drawers = createDrawerNavigator();
-
-const Drawerss = () => {
-	return (
-		<Drawers.Navigator>
-			<Drawers.Screen name="Login" component={LoginScreen} />
-			<Drawers.Screen name="SignUp" component={SignUpScreen} />
-		</Drawers.Navigator>
-	);
-};
 
 function MyTabs({navigation}:{navigation:any}) {
 	return (
 		<Tab.Navigator
+			
 			initialRouteName="HomeSub"
 			screenOptions={({route}) => ({
 				// tabBarShowLabel:false,
@@ -77,27 +52,7 @@ function MyTabs({navigation}:{navigation:any}) {
 					headerShown: false,
 					headerTitleAlign: 'center',
 					headerTransparent: false,
-					// headerLeft: () => {
-					// 	return (
-					// 		<Ionicons
-					// 			onPress={() => {
-					// 				navigation.navigate('Drawer');
-					// 				// console.log('Xin hhh');
-					// 				// navigation.navigate('Home',{screen:'Drawer'})
-
-					// 				// return (
-					// 				// 	<Drawers.Navigator>
-					// 				// 		<Drawers.Screen name="Login" component={LoginScreen} />
-					// 				// 		<Drawers.Screen name="SignUp" component={SignUpScreen} />
-					// 				// 	</Drawers.Navigator>
-					// 				// );
-
-					// 			}}
-					// 			name="menu"
-					// 			size={32}
-					// 			color={'#8B97A8'}></Ionicons>
-					// 	);
-					//},
+					
 					headerLeftContainerStyle: {
 						justifyContent: 'center',
 						marginLeft: 18,

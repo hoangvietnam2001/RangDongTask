@@ -6,37 +6,76 @@ import {
 	Button,
 	TouchableOpacity,
 	ScrollView,
+	Keyboard,
+	Alert,
 } from 'react-native';
-import React from 'react';
-import {navigate} from './../../node_modules/@react-navigation/routers/src/CommonActions';
+import React, {useState, useEffect} from 'react';
+import auth from '@react-native-firebase/auth';
 
 export default function LoginScreen({navigation}: {navigation: any}) {
+	const [email, setEmail] = useState('');
+	const [password, setPassword] = useState('');
+
+	const handleLogin = async () => {
+		try {
+			if (email.length === 0 || password.length === 0) {
+				Alert.alert('Type full fields');
+			} else {
+				const useCredential = await auth()
+					.signInWithEmailAndPassword(email, password)
+					.then(userCredential => {
+						const user = userCredential.user;
+						// Lấy địa chỉ email của người dùng hiện tại
+						const userEmail = user.email;
+						console.log('Địa chỉ email người dùng:', userEmail);
+					});
+				navigation.navigate('HomeDrawer');
+				setEmail('');
+				setPassword('');
+			}
+		} catch (error) {
+			Alert.alert('Invalid email or password');
+			console.log(error);
+		}
+	};
+
 	return (
-		<ScrollView>
-			<View style={styles.container}>
-				<Text style={styles.title}>Welcome back!</Text>
+		// <ScrollView>
+		<View style={styles.container}>
+			<Text style={styles.title}>Welcome back!</Text>
 
-				<TextInput style={styles.textInput} placeholder="Email" />
-				<TextInput style={styles.textInput} placeholder="Password" />
+			<TextInput
+				style={styles.textInput}
+				placeholder="Email"
+				value={email}
+				onChangeText={text => setEmail(text)}
+			/>
+			<TextInput
+				style={styles.textInput}
+				placeholder="Password"
+				value={password}
+				onChangeText={text => setPassword(text)}
+			/>
+			<TouchableOpacity style={styles.btn} onPress={() => handleLogin()}>
+				<Text style={styles.textBtn}>Log in</Text>
+			</TouchableOpacity>
+
+			<View style={styles.footer}>
+				<Text style={styles.textFooter}>Not registered?</Text>
 				<TouchableOpacity
-					style={styles.btn}
-					onPress={() => navigation.navigate('HomeDrawer',{screen:'Home'})}>
-					<Text style={styles.textBtn}>Log in</Text>
+					onPress={() =>
+						// navigation.navigate('SignUp')
+						navigation.navigate('SignUp')
+					}>
+					<Text style={styles.textSignUp}> Sign up!</Text>
 				</TouchableOpacity>
-
-				<View style={styles.footer}>
-					<Text style={styles.textFooter}>Not registered?</Text>
-					<TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-						<Text style={styles.textSignUp}> Sign up!</Text>
-					</TouchableOpacity>
-				</View>
 			</View>
-		</ScrollView>
+		</View>
+		// {/* </ScrollView> */}
 	);
 }
 
 const styles = StyleSheet.create({
-
 	container: {
 		flex: 1,
 		alignItems: 'center',
@@ -81,7 +120,7 @@ const styles = StyleSheet.create({
 	footer: {
 		marginTop: 30,
 		flexDirection: 'row',
-        marginBottom:30
+		marginBottom: 30,
 	},
 	textFooter: {
 		fontSize: 15,

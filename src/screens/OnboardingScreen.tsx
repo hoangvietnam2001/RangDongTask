@@ -6,10 +6,21 @@ import {
 	TouchableOpacity,
 	ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {firebase} from '../../FireBaseConfig';
 
-export default function OnboardingScreen({navigation}:{navigation:any}) {
-    // console.log(typeof navigation)
+export default function OnboardingScreen({navigation}: {navigation: any}) {
+	// console.log(typeof navigation)
+
+	function check() {
+		if (firebase.apps.length) {
+			console.log('Da ket noi');
+			console.log(firebase.apps.length);		
+		} else {
+			console.log('Chua ket noi');
+		}
+	}
+
 	return (
 		<ScrollView style={styles.container}>
 			<Image
@@ -27,7 +38,7 @@ export default function OnboardingScreen({navigation}:{navigation:any}) {
 					onPress={() => navigation.navigate('Login')}>
 					<Text style={styles.textBtn}>Log in</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.btnGetStarted}>
+				<TouchableOpacity style={styles.btnGetStarted} onPress={() => check()}>
 					<Text style={styles.textBtn}>Get started</Text>
 				</TouchableOpacity>
 			</View>

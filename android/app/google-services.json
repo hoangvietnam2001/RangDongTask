@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "639301190484",
+    "project_id": "rangdongtask",
+    "storage_bucket": "rangdongtask.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:639301190484:android:bf20c2329ceb9d89a57ec1",
+        "android_client_info": {
+          "package_name": "com.rangdongtask"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "639301190484-5proisgeikcm2q9hnfkjnkem8sdtutff.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvdmnfiuh-2LVHw6F4JqbKAlzMxRP2RWY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "639301190484-5proisgeikcm2q9hnfkjnkem8sdtutff.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

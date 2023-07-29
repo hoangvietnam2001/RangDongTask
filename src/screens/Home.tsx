@@ -7,7 +7,8 @@ import {
 	TouchableOpacity,
 } from 'react-native';
 import React, {useState} from 'react';
-import { ScrollView } from 'react-native-gesture-handler';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 const Item = ({item}: {item: any}) => {
 	return (
