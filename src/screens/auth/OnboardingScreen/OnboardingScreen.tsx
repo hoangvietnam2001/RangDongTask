@@ -7,7 +7,7 @@ import {
 	ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {firebase} from '../../FireBaseConfig';
+import {firebase} from '../../../../FireBaseConfig';
 
 export default function OnboardingScreen({navigation}: {navigation: any}) {
 	// console.log(typeof navigation)
@@ -24,7 +24,7 @@ export default function OnboardingScreen({navigation}: {navigation: any}) {
 	return (
 		<ScrollView style={styles.container}>
 			<Image
-				source={require('../assets/resources/images/anh1.jpg')}
+				source={require('./anh1.jpg')}
 				style={styles.img}
 			/>
 			<View style={styles.body}>
@@ -38,7 +38,7 @@ export default function OnboardingScreen({navigation}: {navigation: any}) {
 					onPress={() => navigation.navigate('Login')}>
 					<Text style={styles.textBtn}>Log in</Text>
 				</TouchableOpacity>
-				<TouchableOpacity style={styles.btnGetStarted} onPress={() => check()}>
+				<TouchableOpacity style={styles.btnGetStarted} onPress={() => {check()}}>
 					<Text style={styles.textBtn}>Get started</Text>
 				</TouchableOpacity>
 			</View>

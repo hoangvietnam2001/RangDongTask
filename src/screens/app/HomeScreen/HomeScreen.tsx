@@ -7,8 +7,8 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import Home from './Home';
 import Tasks from './Tasks';
-import LoginScreen from './LoginScreen';
-import SignUpScreen from './SignUpScreen';
+import LoginScreen from '../../auth/LoginScreen/LoginScreen';
+import SignUpScreen from '../../auth/SignUpScreen/SignUpScreen';
 
 const Tab = createBottomTabNavigator();
 

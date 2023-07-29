@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, { useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import categories from '../utils/categories';
+import categories from '../../../utils/categories';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 

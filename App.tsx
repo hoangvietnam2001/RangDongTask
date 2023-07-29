@@ -15,14 +15,14 @@ import {
 	DrawerItem,
 } from '@react-navigation/drawer';
 // screen
-import AddNewTaskScreen from './src/screens/AddNewTaskScreen';
-import LoginScreen from './src/screens/LoginScreen';
-import OnboardingScreen from './src/screens/OnboardingScreen';
-import SignUpScreen from './src/screens/SignUpScreen';
-import HomeScreen from './src/screens/HomeScreen';
-import Tasks from './src/screens/Tasks';
-import TermsAndCondition from './src/screens/TermsAndCondition';
-import PrivacyPolicy from './src/screens/PrivacyPolicy';
+import AddNewTaskScreen from './src/screens/app/AddNewTaskScreen/AddNewTaskScreen';
+import LoginScreen from './src/screens/auth/LoginScreen/LoginScreen';
+import OnboardingScreen from './src/screens/auth/OnboardingScreen/OnboardingScreen';
+import SignUpScreen from './src/screens/auth/SignUpScreen/SignUpScreen';
+import HomeScreen from './src/screens/app/HomeScreen/HomeScreen';
+import Tasks from './src/screens/app/HomeScreen/Tasks';
+import TermsAndCondition from './src/screens/app/TermsAndConditionsScreen/TermsAndCondition';
+import PrivacyPolicy from './src/screens/app/PrivacyPolicyScreen/PrivacyPolicy';
 
 // name
 const addNewTaskName = 'AddNewTask';

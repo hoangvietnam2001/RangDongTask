@@ -18,9 +18,9 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {format} from 'date-fns';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
-import categories from '../utils/categories';
+import categories from '../../../utils/categories';
 
-import DataUser from '../utils/dataUser';
+import DataUser from '../../../utils/dataUser';
 
 export default function AddNewTaskScreen({navigation}: {navigation: any}) {
 	// datetimepicker
