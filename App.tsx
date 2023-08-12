@@ -6,6 +6,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // import AuthManager from './src/components/AuthManager';
 
@@ -95,9 +96,10 @@ const LoginedDrawer = ({navigation}: {navigation: any}) => {
 			/>
 			<DrawerItem
 				label="Log out"
-				onPress={() => {
+				onPress={async () => {
 					// handleLogout(navigation, loginName);
-					auth()
+					try {
+						auth()
 						.signOut()
 						.then(() => {
 							navigation.navigate(loginName);
@@ -106,6 +108,14 @@ const LoginedDrawer = ({navigation}: {navigation: any}) => {
 						.catch(error => {
 							console.log('Have error:', error);
 						});
+
+						await AsyncStorage.removeItem('email');
+						await AsyncStorage.removeItem('password');
+
+					} catch (error) {
+						console.log('Have error',error);				
+					}
+					
 				}}
 			/>
 		</DrawerContentScrollView>

@@ -11,11 +11,17 @@ import {
 } from 'react-native';
 import React, {useState, useEffect} from 'react';
 import auth from '@react-native-firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen({navigation}: {navigation: any}) {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 
+	useEffect(() => {
+		checkLoginInfo();
+	}, []);
+
+	// Xử lí nút đăng nhập
 	const handleLogin = async () => {
 		try {
 			if (email.length === 0 || password.length === 0) {
@@ -29,6 +35,7 @@ export default function LoginScreen({navigation}: {navigation: any}) {
 						const userEmail = user.email;
 						console.log('Địa chỉ email người dùng:', userEmail);
 					});
+				saveLoginInfo(email, password);
 				navigation.navigate('HomeDrawer');
 				setEmail('');
 				setPassword('');
@@ -39,6 +46,32 @@ export default function LoginScreen({navigation}: {navigation: any}) {
 		}
 	};
 
+	// lưu thông tin email pass
+	const saveLoginInfo = async (email: string, password: string) => {
+		try {
+			await AsyncStorage.setItem('email', email);
+			await AsyncStorage.setItem('password', password);
+		} catch (error) {
+			console.log('Error when login :', error);
+		}
+	};
+
+	// checklogin
+	const checkLoginInfo = async () => {
+		try {
+			const email = await AsyncStorage.getItem('email');
+			const password = await AsyncStorage.getItem('password');
+			console.log(email, '-', password);
+			
+			if (email && password) {
+				// tu dong dien
+				setEmail(email);
+				setPassword(password);
+			}
+		} catch (error) {
+			console.log('Error retrieving login information:', error);
+		}
+	};
 	return (
 		// <ScrollView>
 		<View style={styles.container}>
@@ -55,6 +88,7 @@ export default function LoginScreen({navigation}: {navigation: any}) {
 				placeholder="Password"
 				value={password}
 				onChangeText={text => setPassword(text)}
+				secureTextEntry
 			/>
 			<TouchableOpacity style={styles.btn} onPress={() => handleLogin()}>
 				<Text style={styles.textBtn}>Log in</Text>
@@ -79,6 +113,7 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		alignItems: 'center',
+		backgroundColor: '#FFF',
 	},
 	title: {
 		fontSize: 28,
@@ -87,7 +122,7 @@ const styles = StyleSheet.create({
 		fontWeight: '700',
 		fontFamily: 'Roboto-Regular',
 		letterSpacing: 0.36,
-		marginTop: 50,
+		marginTop: 80,
 		color: '#173147',
 		marginBottom: 35,
 	},

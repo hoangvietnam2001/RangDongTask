@@ -22,7 +22,7 @@ export default function SignUpScreen({navigation}: {navigation: any}) {
 	const [confirm, setConfirm] = useState('');
 
 	const [check, setCheck] = useState(false);
-console.log(check);
+	console.log(check);
 
 	// Hàm lưu thông tin người dùng vào Firestore
 	const saveUserData = (uId: any, fName: any, lName: any) => {
@@ -88,14 +88,19 @@ console.log(check);
 			firstName.length == 0 ||
 			lastName.length == 0 ||
 			passWord.length == 0 ||
-			confirm.length == 0 || check===false
+			confirm.length == 0 ||
+			check === false
 		) {
 			Alert.alert('Type full fields and agree condition');
 		} else {
-			if (passWord !== confirm) {
-				Alert.alert('Password and Confirm password not the same');
+			if (passWord.length < 6) {
+				Alert.alert('Password at least 6 characters');
 			} else {
-				handleSignUp(email, passWord, firstName, lastName);
+				if (passWord !== confirm) {
+					Alert.alert('Password and Confirm password not the same');
+				} else {
+					handleSignUp(email, passWord, firstName, lastName);
+				}
 			}
 		}
 	};
@@ -136,7 +141,7 @@ console.log(check);
 				/>
 				<View style={[styles.term, {flexDirection: 'row'}]}>
 					<Ionicons
-						name={check ? 'checkbox-outline':'square-outline'}
+						name={check ? 'checkbox-outline' : 'square-outline'}
 						size={20}
 						color={'#403572'}
 						onPress={() => setCheck(!check)}

@@ -49,6 +49,7 @@ export default function OnboardingScreen({navigation}: {navigation: any}) {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
+		backgroundColor:'#fff'
 	},
 	img: {
 		width: '100%',
@@ -59,8 +60,9 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 		borderTopLeftRadius: 30,
 		borderTopRightRadius: 30,
-		height: '100%',
+		// height: '100%',
 		alignItems: 'center',
+		justifyContent:'center'
 	},
 	title: {
 		fontFamily: 'Roboto-Regular',

@@ -6,8 +6,10 @@ import {
 	TouchableOpacity,
 	FlatList,
 	Alert,
+	Dimensions,
+	ToastAndroid,
 } from 'react-native';
-import React, { useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import categories from '../../../utils/categories';
 import firestore from '@react-native-firebase/firestore';
@@ -20,13 +22,7 @@ export default function Tasks({navigation}: {navigation: any}) {
 	const [nameTask, setNameTask] = useState(categories[0].name);
 	const [isActive, setIsActive] = useState(categories[0].id);
 
-	console.log('Current ID :', U_ID);
-
 	useEffect(() => {
-		// fetchData('Task')
-		// 	.then(datas => setData(datas))
-		// 	.catch(error => console.log('Error get data', error));
-
 		const query = firestore()
 			.collection('Task')
 			.where('userId', '==', U_ID)
@@ -34,9 +30,18 @@ export default function Tasks({navigation}: {navigation: any}) {
 				const updatedTodos = querySnapshot.docs.map(doc => doc.data());
 				setData(updatedTodos);
 			});
-
 		return () => query();
 	}, [U_ID]);
+
+	// console.log('Data',firestore().collection('Task').doc());
+
+	const showToast = () => {
+		ToastAndroid.showWithGravity(
+			'Xóa thành công !!',
+			ToastAndroid.SHORT,
+			ToastAndroid.CENTER,
+		);
+	};
 
 	const handleToggleStatus = (des: any) => {
 		const updatedTodoList = data.map((item: any) => {
@@ -45,9 +50,6 @@ export default function Tasks({navigation}: {navigation: any}) {
 		setData(updatedTodoList);
 	};
 
-	const handleDele = (des: string) => {
-		const updatedTodoList = dataOfCategory.filter(item => {});
-	};
 	// active with category
 	const handleToggleCheck = (itemId: any) => {
 		setIsActive(itemId);
@@ -116,13 +118,44 @@ export default function Tasks({navigation}: {navigation: any}) {
 				batch.delete(documentRef);
 			});
 			await batch.commit();
-			Alert.alert('Deleted Successfully');
+			// Alert.alert('Deleted Successfully');
+			showToast();
 			console.log('Xóa các tài liệu thành công thỏa mãn điều kiện.');
 		} catch (error) {
 			console.log('Lỗi khi xóa các tài liệu:', error);
 		}
 	};
 
+	const handleDele = (
+		collectionName,
+		conditionField,
+		conditionOperator,
+		conditionValue,
+	) => {
+		Alert.alert(
+			'Delete Item',
+			'Do you want to delete this item ?',
+			[
+				{
+					text: 'Cancel',
+					style: 'cancel',
+				},
+				{
+					text: 'Ok',
+					onPress: () => {
+						deleteTask(
+							collectionName,
+							conditionField,
+							conditionOperator,
+							conditionValue,
+						);
+					},
+				},
+			],
+			{cancelable: false},
+			// Không cho phép người dùng nhấn bất kỳ nút nào khác ngoài OK hoặc Cancel để đóng alert
+		);
+	};
 	// update('Task', 'description', '==', 'Cooking', {status: true});
 	//  deleteTask('Task','description','==','Smiling with monkey');
 
@@ -159,6 +192,7 @@ export default function Tasks({navigation}: {navigation: any}) {
 						renderItem={Item}
 						keyExtractor={item => item.id.toString()}
 						horizontal
+						showsHorizontalScrollIndicator={false}
 					/>
 				</View>
 
@@ -196,14 +230,16 @@ export default function Tasks({navigation}: {navigation: any}) {
 										]}>
 										{item.description}
 									</Text>
-
+									<Text style={{color:'#000',fontSize:12,position:'absolute',right:30}}>
+										{item.deadline}
+									</Text>
 									<Ionicons
 										style={{position: 'absolute', right: 0}}
 										name="close"
 										size={24}
 										color={'#403572'}
 										onPress={() =>
-											deleteTask('Task', 'description', '==', item.description)
+											handleDele('Task', 'description', '==', item.description)
 										}
 									/>
 								</View>
@@ -211,15 +247,14 @@ export default function Tasks({navigation}: {navigation: any}) {
 						);
 					})}
 				</View>
-
-				<TouchableOpacity
-					style={styles.btnAdd}
-					onPress={() => {
-						navigation.navigate('AddNewTask');
-					}}>
-					<Text style={styles.textBtnAdd}>+</Text>
-				</TouchableOpacity>
 			</View>
+			<TouchableOpacity
+				style={styles.btnAdd}
+				onPress={() => {
+					navigation.navigate('AddNewTask');
+				}}>
+				<Text style={styles.textBtnAdd}>+</Text>
+			</TouchableOpacity>
 		</View>
 	);
 }
@@ -231,7 +266,7 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 	},
 	todoTask: {
-		width: 330,
+		width: 320,
 		height: 200,
 		marginTop: 40,
 		borderRadius: 15,
@@ -292,8 +327,8 @@ const styles = StyleSheet.create({
 		backgroundColor: '#4681A3',
 		justifyContent: 'center',
 		alignItems: 'center',
-		bottom: -284,
-		left: 283,
+		top: 480,
+		right: 40,
 	},
 	textBtnAdd: {
 		color: '#fff',

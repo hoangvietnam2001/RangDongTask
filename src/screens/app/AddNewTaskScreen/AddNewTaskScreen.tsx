@@ -19,8 +19,7 @@ import {format} from 'date-fns';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 import categories from '../../../utils/categories';
-
-import DataUser from '../../../utils/dataUser';
+import moment from 'moment';
 
 export default function AddNewTaskScreen({navigation}: {navigation: any}) {
 	// datetimepicker
@@ -28,7 +27,6 @@ export default function AddNewTaskScreen({navigation}: {navigation: any}) {
 	const [showPicker, setShowPicker] = useState(false);
 
 	const [category, setCategory] = useState('');
-	const [status, setStatus] = useState(false);
 	const [deadline, setDeadline] = useState('');
 	const [des, setDes] = useState('');
 	const [id, setId] = useState(auth().currentUser?.uid);
@@ -62,6 +60,10 @@ export default function AddNewTaskScreen({navigation}: {navigation: any}) {
 		setTime('');
 		setIsActive(0);
 	};
+	// get Time
+	const getTimeNumber = date => {
+		return moment(date, 'HH:mm:ss DD-MM-YYYY').toDate().getTime();
+	};
 	// handle button addnewtasks
 	const addData = async (
 		category: string,
@@ -74,16 +76,21 @@ export default function AddNewTaskScreen({navigation}: {navigation: any}) {
 			if (category === '' || des === '' || deadline == '' || id === null) {
 				Alert.alert('Type full fields');
 			} else {
-				await firestore().collection('Task').add({
-					category: category,
-					status: false,
-					deadline: deadline,
-					description: des,
-					userId: id,
-				});
-				setData();
-				// console.log('Add success');
-				Alert.alert('Added Successfully');
+				if (getTimeNumber(deadline) - getTimeNumber(new Date()) < 0) {
+					Alert.alert('Overdue date');
+				} else {
+					await firestore().collection('Task').add({
+						category: category,
+						status: false,
+						deadline: deadline,
+						description: des,
+						userId: id,
+					});
+					setData();
+					// console.log('Add success');
+					Alert.alert('Added Successfully');
+					navigation.navigate('HomeDrawer', {screen: 'Home'});
+				}
 			}
 		} catch (err) {
 			console.log('Have error :', err);
@@ -95,7 +102,7 @@ export default function AddNewTaskScreen({navigation}: {navigation: any}) {
 		return (
 			<TouchableOpacity
 				onPress={() => {
-					setCategory(item.name)
+					setCategory(item.name);
 					setIsActive(item.id);
 				}}
 				style={[
@@ -109,6 +116,10 @@ export default function AddNewTaskScreen({navigation}: {navigation: any}) {
 			</TouchableOpacity>
 		);
 	};
+
+	//  moment(time).format()
+	console.log('Times', getTimeNumber(time));
+	console.log(getTimeNumber(new Date()));
 
 	return (
 		<ScrollView style={{flex: 1, backgroundColor: '#fff'}}>
@@ -134,6 +145,7 @@ export default function AddNewTaskScreen({navigation}: {navigation: any}) {
 							}}
 							keyExtractor={item => item.id.toString()}
 							horizontal
+							showsHorizontalScrollIndicator={false}
 						/>
 					</View>
 				</View>
@@ -168,7 +180,6 @@ export default function AddNewTaskScreen({navigation}: {navigation: any}) {
 					onPress={() => {
 						addData(category, false, deadline, des, auth().currentUser?.uid);
 						// console.log(category);
-						
 					}}>
 					<Text style={styles.btnText}>Add the task</Text>
 				</TouchableOpacity>

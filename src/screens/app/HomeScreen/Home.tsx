@@ -5,10 +5,13 @@ import {
 	FlatList,
 	SafeAreaView,
 	TouchableOpacity,
+	Dimensions,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
+import levelsData from '../../../utils/levelData';
 import firestore from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
+import moment from 'moment';
 
 const Item = ({item}: {item: any}) => {
 	return (
@@ -54,6 +57,93 @@ const data = [
 ];
 
 export default function Home({navigation}: {navigation: any}) {
+	const U_ID = auth().currentUser?.uid;
+	const [data, setData] = useState([]);
+	const [levelData, setLeveldata] = useState(levelsData);
+	const [high, setHigh] = useState(0);
+	const [due, setDue] = useState(0);
+	const [win, setWin] = useState(0);
+
+	useEffect(() => {
+		// updateLevelData();
+
+		const query = firestore()
+			.collection('Task')
+			.where('userId', '==', U_ID)
+			.onSnapshot(querySnapshot => {
+				const updateTodos = querySnapshot.docs.map(doc => doc.data());
+				setData(updateTodos);
+			});
+		return () => {
+			query();
+		};
+	}, [U_ID]);
+
+	// xu li khi thay doi data
+	useEffect(() => {
+		updateLevelData();
+	}, [data]);
+
+	// set number
+	const setNumberLevel = (high: number, due: number, quickWin: number) => {
+		setHigh(high);
+		setDue(due);
+		setWin(quickWin);
+	};
+
+	
+	const updateLevelData = () => {
+		const getNumberTime = (time: string) => {
+			return moment(time, 'HH:mm:ss DD-MM-YYYY').toDate().getTime() / 86400000;
+		};
+		const currentDate = new Date().getTime() / 86400000;
+
+		const highNumber = data.filter(
+			item =>
+				getNumberTime(item.deadline) - currentDate > 0 &&
+				item.status === false &&
+				getNumberTime(item.deadline) - currentDate <= 1,
+		).length;
+		const dueNumber = data.filter(
+			item =>
+				item.status === false && getNumberTime(item.deadline) - currentDate < 0,
+		).length;
+		const quickWinNumber = data.filter(
+			item =>
+				getNumberTime(item.deadline) - currentDate > 0 && item.status === true,
+		).length;
+
+		setNumberLevel(highNumber, dueNumber, quickWinNumber);
+
+		const newLevelData = [
+			{
+				id: 1,
+				quantity: highNumber,
+			},
+			{
+				id: 2,
+				quantity: dueNumber,
+			},
+			{
+				id: 3,
+				quantity: quickWinNumber,
+			},
+		];
+
+		const updateLevelDataRoot = levelData.map(item => {
+			const updateQuantity = newLevelData.find(
+				updatedItem => item.id === updatedItem.id,
+			);
+			if (updateQuantity) {
+				return {...item, quantity: updateQuantity.quantity};
+			}
+			return item;
+		});
+		setLeveldata(updateLevelDataRoot);
+		console.log('New Obj:', updateLevelDataRoot);
+
+	};
+
 	return (
 		<View style={styles.container}>
 			{/* Daily Task  */}
@@ -61,7 +151,7 @@ export default function Home({navigation}: {navigation: any}) {
 				<Text style={styles.dailyTaskText}>Daily Tasks:</Text>
 				<View style={styles.list}>
 					<FlatList
-						data={data}
+						data={levelData}
 						renderItem={({item}) => <Item item={item} />}
 						keyExtractor={item => item.id.toString()}
 						horizontal={true}
@@ -80,11 +170,12 @@ export default function Home({navigation}: {navigation: any}) {
 
 			{/* button Add  */}
 			{/* <View style={styles.btn}> */}
-			<TouchableOpacity 
-			style={styles.btnAdd}
-			onPress={()=>{
-				console.log('====================================');
-				navigation.navigate('AddNewTask')}}>
+			<TouchableOpacity
+				style={styles.btnAdd}
+				onPress={() => {
+					console.log('====================================');
+					navigation.navigate('AddNewTask');
+				}}>
 				<Text style={styles.textBtnAdd}>+</Text>
 			</TouchableOpacity>
 			{/* </View> */}
@@ -178,13 +269,13 @@ const styles = StyleSheet.create({
 		backgroundColor: '#4681A3',
 		justifyContent: 'center',
 		alignItems: 'center',
-        position:'absolute',
-        bottom:20,
-        right:40
+		position: 'absolute',
+		top: 480,
+		right: 40,
 	},
 	textBtnAdd: {
-        color:'#fff',
-        fontSize:28,
-        fontWeight:'400',
-    },
+		color: '#fff',
+		fontSize: 28,
+		fontWeight: '400',
+	},
 });

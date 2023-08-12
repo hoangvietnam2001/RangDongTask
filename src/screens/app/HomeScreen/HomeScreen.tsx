@@ -7,12 +7,9 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 
 import Home from './Home';
 import Tasks from './Tasks';
-import LoginScreen from '../../auth/LoginScreen/LoginScreen';
-import SignUpScreen from '../../auth/SignUpScreen/SignUpScreen';
+
 
 const Tab = createBottomTabNavigator();
-
-const Drawers = createDrawerNavigator();
 
 function MyTabs({navigation}:{navigation:any}) {
 	return (
